@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace SecretApp_login
 {
@@ -6,6 +7,8 @@ namespace SecretApp_login
     {
         static string[] userNamesList = { "pelle", "stina", "ali" };
         static string[] userPasswordsList = { "1234", "12345", "123456" };
+        static string adminPassword = "wass"; // behöver komma på ett bättre lösenord
+        static string? currentUser;
         static bool loggedIn = false;
         static void Main(string[] args)
         {
@@ -19,12 +22,12 @@ namespace SecretApp_login
                     if (choice == 1)
                     {
                         LoggIn();
-                    } //loggin
+                    }
 
-                    else if (choice == 2) 
+                    else if (choice == 2)
                     {
                         AddUser();
-                    }//add user
+                    }
 
                     else if (choice == 3)
                     {
@@ -38,7 +41,7 @@ namespace SecretApp_login
 
                     else if (choice == 5)
                     {
-                        deleteUser();
+                        Deleting();
 
                     }
 
@@ -119,7 +122,7 @@ namespace SecretApp_login
         {
             Console.WriteLine("Status: " + loggedIn);
             int i = 0;
-            if (loggedIn)
+            if (loggedIn || !loggedIn)
             {
                 while (i < userNamesList.Length)
                 {
@@ -133,20 +136,58 @@ namespace SecretApp_login
             }
             Menu();
         } //funkar
-        static void deleteUser()
+        static void Deleting()
         {
-            string[] tempNamelist = new string[userNamesList.Length - 1];
-            string[] tempPasswordList = new string[userPasswordsList.Length - 1];
+            string[] tempNames = new string[userNamesList.Length - 1];
+            string[] tempPassword = new string[userPasswordsList.Length - 1];
+            //TODO måste fixa att man behöver lösen ord 
+            if (loggedIn== false)
+            {
+                Console.WriteLine("Du måste logga in för att ta bort en användare");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Skriv namnet på den du vill ta bort: ");
+                string Atemt_name_del = Console.ReadLine();
+                if (currentUser == Atemt_name_del)
+                {
+                    DeleteUser(tempNames, tempPassword, Atemt_name_del);
+                    LoggOut();
+                    Console.WriteLine("Du har tagit bort dig själv från listan, du är nu utloggad");
+                }
+                else if (currentUser != Atemt_name_del)
+                {
 
-            Console.WriteLine("Skriv namnet på den du vill ta bort");
-            string name = Console.ReadLine();
+                    Console.WriteLine("skriv Admin lösenordet för att ta bort en användare");
+                    string userAdminPassword = Console.ReadLine();
 
-            int hit = Array.IndexOf(userNamesList, name);
-            if (hit == 0)
+
+                    if (userAdminPassword != adminPassword)
+                    {
+                        Console.WriteLine("du är inte Admin, sluta försöka ta bort folk");
+                        return;
+                    }
+                    else
+                    {
+                        DeleteUser(tempNames, tempPassword, Atemt_name_del);
+                    }
+                }
+
+            }
+        } // funkar halft
+
+        static void DeleteUser(string[] tempNames, string[] tempPassword, string Atemt_name_del)
+        {
+
+            int hit = Array.IndexOf(userNamesList, Atemt_name_del);
+
+            if (hit == -1)
             {
                 Console.WriteLine("Namnet finns inte i listan");
                 return;
             }
+
             int i = 0;
             int j = 0;
 
@@ -157,19 +198,30 @@ namespace SecretApp_login
                     i++;
                     continue;
                 }
-                tempNamelist[j] = userNamesList[i];
+                tempNames[j] = userNamesList[i];
                 i++;
                 j++;
-
             }
+
+            userNamesList = tempNames;
+
             i = 0;
             j = 0;
 
             while (i < userPasswordsList.Length)
             {
-                Console.WriteLine(userPasswordsList);
+                if (hit == i)
+                {
+                    i++;
+                    continue;
+                }
+                tempPasswordsList[i] = userPasswordsList[i];
+                i++;
+                j++;
             }
-        } // funkar inte
+
+            userPasswordsList = tempPasswordslist; 
+        }
         static void LoggIn()
         {
             Console.WriteLine("Inloggning");
@@ -187,6 +239,7 @@ namespace SecretApp_login
                     {
                         Console.WriteLine("Välkommen " + name);
                         loggedIn = true;
+                        currentUser = name;
                         break;
                     }
 
@@ -217,7 +270,7 @@ namespace SecretApp_login
 
             int oldPasswordIndex = Array.IndexOf(userPasswordsList, oldPassword);
 
-            if (!loggedIn)
+            if (loggedIn)
             {
                 Console.WriteLine("Du måste logga in för att ändra lösenordet");
                 return;
@@ -239,15 +292,19 @@ namespace SecretApp_login
                 string newPassword = Console.ReadLine();
                 userPasswordsList[changePassword] = newPassword;
             }
-            Console.Clear();
-            Menu();
-
-        }// funkar
+        }// funkar inte
         static void LoggOut() 
         {
-            Console.WriteLine("you ar now loggd out");
-            loggedIn=false;
-            Menu();
+            if (loggedIn) 
+            {
+               loggedIn= false;
+                Console.WriteLine("Du är nu utloggad");
+                
+            }
+            else
+            {
+                Console.WriteLine("du var inte inloggad");
+            }
         } // funkar
         static void Menu()
         {
@@ -258,7 +315,7 @@ namespace SecretApp_login
             "3. ändra lösenord\n" +
             "4. visa användar lista\n" +
             "5. visa deletUser\n" +
-            "6. visa Logg a Out\n "+
+            "6. visa Logg a Out\n"+
             "9. visa menyn\n" +
             "0. avsluta\n"
             );
