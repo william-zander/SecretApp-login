@@ -42,6 +42,11 @@ namespace SecretApp_login
 
                     }
 
+                    else if (choice == 6) 
+                    {
+                        LoggOut();
+                    }
+
                     else if (choice == 9)
                     {
                         Menu();
@@ -107,7 +112,9 @@ namespace SecretApp_login
                 Console.WriteLine("you are not a user that");
 
             }
-        }
+            Console.Clear();
+            Menu();
+        }  //funkar
         static void ShowUsers()
         {
             Console.WriteLine("Status: " + loggedIn);
@@ -124,7 +131,8 @@ namespace SecretApp_login
             {
                 Console.WriteLine("du får inte se deta");
             }
-        }
+            Menu();
+        } //funkar
         static void deleteUser()
         {
             string[] tempNamelist = new string[userNamesList.Length - 1];
@@ -161,7 +169,7 @@ namespace SecretApp_login
             {
                 Console.WriteLine(userPasswordsList);
             }
-        }
+        } // funkar inte
         static void LoggIn()
         {
             Console.WriteLine("Inloggning");
@@ -190,20 +198,23 @@ namespace SecretApp_login
                 }  
              i++;  
             }
-            
-
-
             if (Array.IndexOf(userNamesList, name) == -1)
             {
                 Console.WriteLine("Inget sådant namn finns i listan. För att lägga till en avändare, välj i menyn.");
             }
-
+            Console.Clear();
             Menu();
-        }
+        } // funkar
         static void ChangePassword()
         {
             Console.WriteLine("enter name of the acount you want to change password on");
 
+        } // funkar inte
+        static void LoggOut() 
+        {
+            Console.WriteLine("you ar now loggd out");
+            loggedIn=false;
+            Menu();
         }
         static void Menu()
         {
