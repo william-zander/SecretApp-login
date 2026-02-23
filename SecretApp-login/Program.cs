@@ -19,12 +19,12 @@ namespace SecretApp_login
                     if (choice == 1)
                     {
                         LoggIn();
-                    }
+                    } //loggin
 
-                    else if (choice == 2)
+                    else if (choice == 2) 
                     {
                         AddUser();
-                    }
+                    }//add user
 
                     else if (choice == 3)
                     {
@@ -202,20 +202,53 @@ namespace SecretApp_login
             {
                 Console.WriteLine("Inget sådant namn finns i listan. För att lägga till en avändare, välj i menyn.");
             }
-            Console.Clear();
             Menu();
         } // funkar
         static void ChangePassword()
         {
-            Console.WriteLine("enter name of the acount you want to change password on");
+            string[] tempNames = new string[userNamesList.Length - 1];
+            string[] tempPassword = new string[userPasswordsList.Length - 1];
+            Console.WriteLine("Skriv namnet vars lösenord du vill ändra: ");
+            string password = Console.ReadLine();
+            int changePassword = Array.IndexOf(userNamesList, password);
 
-        } // funkar inte
+            Console.WriteLine("Skriv det nuvarande lösenordet");
+            string oldPassword = Console.ReadLine();
+
+            int oldPasswordIndex = Array.IndexOf(userPasswordsList, oldPassword);
+
+            if (!loggedIn)
+            {
+                Console.WriteLine("Du måste logga in för att ändra lösenordet");
+                return;
+            }
+            else if (changePassword == -1)
+            {
+                Console.WriteLine("lösenordet finns inte.");
+                return;
+            }
+            else if (oldPasswordIndex == -1)
+            {
+                Console.WriteLine("lösenordet finns inte.");
+                return;
+            }
+
+            if (oldPasswordIndex == changePassword)
+            {
+                Console.WriteLine("skriv det nya lösenordet");
+                string newPassword = Console.ReadLine();
+                userPasswordsList[changePassword] = newPassword;
+            }
+            Console.Clear();
+            Menu();
+
+        }// funkar
         static void LoggOut() 
         {
             Console.WriteLine("you ar now loggd out");
             loggedIn=false;
             Menu();
-        }
+        } // funkar
         static void Menu()
         {
             Console.WriteLine(
@@ -225,6 +258,7 @@ namespace SecretApp_login
             "3. ändra lösenord\n" +
             "4. visa användar lista\n" +
             "5. visa deletUser\n" +
+            "6. visa Logg a Out\n "+
             "9. visa menyn\n" +
             "0. avsluta\n"
             );
